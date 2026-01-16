@@ -1,0 +1,128 @@
+<nav class="navbar navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <span class="navbar-brand">Website Monitor Dashboard</span>
+    <button class="btn btn-outline-light btn-sm" (click)="goBack()">
+      <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </button>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Monitor Details -->
+  <div *ngIf="!isLoading && monitor">
+    <!-- Monitor Info Card -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h2 class="card-title">{{ monitor.name }}</h2>
+            <p class="card-text text-muted mb-2">{{ monitor.url }}</p>
+            <p class="card-text">
+              <small class="text-muted">
+                Check Interval: {{ monitor.check_interval_seconds }}s
+              </small>
+            </p>
+          </div>
+          <button class="btn btn-primary" (click)="triggerCheck()">
+            Check Now
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4" *ngIf="stats">
+      <div class="col-md-4">
+        <div class="card text-center">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Uptime (24h)</h6>
+            <h3 class="card-title">{{ stats.uptime_percentage.toFixed(2) }}%</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-center">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Avg Response Time</h6>
+            <h3 class="card-title">{{ stats.average_response_ms.toFixed(0) }}ms</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-center">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Total Checks</h6>
+            <h3 class="card-title">{{ stats.total_checks }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Response Time Chart -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Response Time History</h5>
+      </div>
+      <div class="card-body">
+        <!-- TODO: Implement chart using Chart.js or ng2-charts -->
+        <!-- You'll need to:
+             1. Install and import the chart library
+             2. Create a canvas element
+             3. Configure chart with checks data
+             4. Display response times over time as a line chart -->
+        <div class="text-center py-5 text-muted">
+          Chart not implemented yet - use Chart.js to display response times
+        </div>
+      </div>
+    </div>
+
+    <!-- Check History Table -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Recent Checks</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Status Code</th>
+                <th>Response Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let check of checks">
+                <td>{{ formatDate(check.checked_at) }}</td>
+                <td>{{ check.status_code }}</td>
+                <td>{{ check.response_time_ms }}ms</td>
+                <td>
+                  <span [class]="getStatusClass(check)">
+                    <span class="status-indicator" [class.up]="check.is_up" [class.down]="!check.is_up"></span>
+                    {{ getStatusText(check) }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="checks.length === 0">
+                <td colspan="4" class="text-center text-muted">No checks yet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

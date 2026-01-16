@@ -1,0 +1,61 @@
+services:
+  # MariaDB Database
+  db:
+    image: mariadb:10.11
+    container_name: monitor-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: monitoring
+      MYSQL_USER: monitoruser
+      MYSQL_PASSWORD: monitorpass
+    ports:
+      - "5001:3306"
+    volumes:
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - monitor-network
+
+  # Go Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: monitor-backend
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: monitoruser
+      DB_PASSWORD: monitorpass
+      DB_NAME: monitoring
+      JWT_SECRET: your-secret-key-change-in-production
+      PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - monitor-network
+    restart: unless-stopped
+
+  # Mock Website for Testing
+  mock-website:
+    image: kennethreitz/httpbin
+    container_name: monitor-mock
+    ports:
+      - "8080:80"
+    networks:
+      - monitor-network
+
+volumes:
+  db_data:
+
+networks:
+  monitor-network:
+    driver: bridge

@@ -1,0 +1,114 @@
+<nav class="navbar navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <span class="navbar-brand">Website Monitor Dashboard</span>
+    <button class="btn btn-outline-light btn-sm" (click)="goBack()">
+      <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">Add New Monitor</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="monitorForm" (ngSubmit)="onSubmit()">
+            <!-- Monitor Name -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Monitor Name *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                formControlName="name"
+                [class.is-invalid]="name?.invalid && name?.touched"
+                placeholder="e.g., My Website"
+              />
+              <div class="invalid-feedback" *ngIf="name?.errors?.['required']">
+                Monitor name is required
+              </div>
+              <div class="invalid-feedback" *ngIf="name?.errors?.['minlength']">
+                Monitor name must be at least 3 characters
+              </div>
+              <div class="invalid-feedback" *ngIf="name?.errors?.['maxlength']">
+                Monitor name must not exceed 50 characters
+              </div>
+            </div>
+
+            <!-- URL -->
+            <div class="mb-3">
+              <label for="url" class="form-label">URL *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="url"
+                formControlName="url"
+                [class.is-invalid]="url?.invalid && url?.touched"
+                placeholder="https://example.com"
+              />
+              <small class="form-text text-muted">
+                Use test URLs like: http://mock-website:8080/status/200 or https://httpstat.us/200
+              </small>
+              <div class="invalid-feedback" *ngIf="url?.errors?.['required']">
+                URL is required
+              </div>
+              <div class="invalid-feedback" *ngIf="url?.errors?.['pattern']">
+                Please enter a valid HTTP/HTTPS URL
+              </div>
+            </div>
+
+            <!-- Check Interval -->
+            <div class="mb-3">
+              <label for="check_interval_seconds" class="form-label">Check Interval (seconds) *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="check_interval_seconds"
+                formControlName="check_interval_seconds"
+                [class.is-invalid]="checkInterval?.invalid && checkInterval?.touched"
+              />
+              <small class="form-text text-muted">
+                Minimum: 30 seconds, Maximum: 3600 seconds (1 hour)
+              </small>
+              <div class="invalid-feedback" *ngIf="checkInterval?.errors?.['required']">
+                Check interval is required
+              </div>
+              <div class="invalid-feedback" *ngIf="checkInterval?.errors?.['min']">
+                Check interval must be at least 30 seconds
+              </div>
+              <div class="invalid-feedback" *ngIf="checkInterval?.errors?.['max']">
+                Check interval must not exceed 3600 seconds
+              </div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+              {{ errorMessage }}
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="monitorForm.invalid || isLoading"
+              >
+                <span *ngIf="!isLoading">Create Monitor</span>
+                <span *ngIf="isLoading">
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Creating...
+                </span>
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="goBack()">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

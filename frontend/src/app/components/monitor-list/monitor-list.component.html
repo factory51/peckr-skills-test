@@ -1,0 +1,85 @@
+<nav class="navbar navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <span class="navbar-brand">Website Monitor Dashboard</span>
+    <button class="btn btn-outline-light btn-sm" (click)="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Monitors</h2>
+    <button class="btn btn-primary" routerLink="/add-monitor">
+      <i class="bi bi-plus-circle me-2"></i>Add Monitor
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && monitors.length === 0 && !errorMessage" class="text-center py-5">
+    <h4 class="text-muted">No monitors yet</h4>
+    <p class="text-muted">Add your first monitor to get started!</p>
+    <button class="btn btn-primary" routerLink="/add-monitor">Add Monitor</button>
+  </div>
+
+  <!-- Monitors Grid -->
+  <div class="row" *ngIf="!isLoading && monitors.length > 0">
+    <div class="col-md-6 col-lg-4 mb-4" *ngFor="let monitor of monitors">
+      <div class="card h-100 monitor-card" (click)="navigateToDetail(monitor.id)">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <h5 class="card-title mb-0">{{ monitor.name }}</h5>
+            <!-- TODO: Add status indicator based on latest check -->
+            <span class="status-indicator up"></span>
+          </div>
+          
+          <p class="card-text text-truncate">
+            <small class="text-muted">{{ monitor.url }}</small>
+          </p>
+
+          <!-- TODO: Display last check time -->
+          <p class="card-text">
+            <small class="text-muted">Last checked: {{ getRelativeTime(monitor.created_at) }}</small>
+          </p>
+
+          <!-- TODO: Display uptime percentage -->
+          <div class="mb-3">
+            <small class="text-muted">Uptime: </small>
+            <strong>N/A</strong>
+          </div>
+
+          <div class="btn-group w-100" role="group">
+            <button 
+              class="btn btn-sm btn-outline-primary"
+              (click)="triggerCheck(monitor.id, $event)"
+            >
+              Check Now
+            </button>
+            <button 
+              class="btn btn-sm btn-outline-secondary"
+              (click)="navigateToDetail(monitor.id)"
+            >
+              View Details
+            </button>
+            <button 
+              class="btn btn-sm btn-outline-danger"
+              (click)="deleteMonitor(monitor.id, $event)"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
