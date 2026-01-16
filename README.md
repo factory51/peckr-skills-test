@@ -183,25 +183,25 @@ Your README must include:
 
 ### Evaluation Criteria
 
-**Backend (40 points):**
-- API endpoints functional (12 pts)
-- Database design and SQL (10 pts)
-- Health check implementation (8 pts)
-- JWT authentication (5 pts)
-- Docker setup (3 pts)
-- Code quality (2 pts)
+**Backend:**
+- API endpoints functional
+- Database design and SQL
+- Health check implementation
+- JWT authentication
+- Docker setup
+- Code quality
 
-**Frontend (40 points):**
-- Component architecture (12 pts)
-- API integration & RxJS (10 pts)
-- Visualization & UX (8 pts)
-- Form validation (6 pts)
-- Responsive design (4 pts)
+**Frontend:**
+- Component architecture
+- API integration & RxJS
+- Visualization & UX
+- Form validation
+- Responsive design
 
-**Documentation (20 points):**
-- README completeness (10 pts)
-- Git commit history (5 pts)
-- Code comments (5 pts)
+**Documentation:**
+- README completeness
+- Git commit history
+- Code comments
 
 **Bonus Challenges (Optional):**
 - WebSocket for real-time updates
